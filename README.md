@@ -1,10 +1,10 @@
 # Stable Diffusion NSFW Filter (adjustable)
 
-An isolated version of Stable Diffusion's content filter, which lets you run it against arbitrary images.
+<p align="center"><b><a href="https://replicate.com/m1guelpf/nsfw-filter" target="_blank">View original on Replicate</a> | <a href="https://github.com/m1guelpf/cog-nsfw-filter" target="_blank">Upstream repo</a></b></p>
 
-This fork of [m1guelpf/cog-nsfw-filter](https://github.com/m1guelpf/cog-nsfw-filter) (Replicate: [m1guelpf/nsfw-filter](https://replicate.com/m1guelpf/nsfw-filter)) uses the CompVis safety checker only (no full Stable Diffusion pipeline) and exposes **adjustable thresholds** so you can tune how aggressive the filter is.
+An isolated version of Stable Diffusion's content filter, which lets you run it against arbitrary images - with **adjustable thresholds**.
 
-**Try / view:** [m1guelpf/nsfw-filter on Replicate](https://replicate.com/m1guelpf/nsfw-filter) (original) | deploy this adjustable build under your own Replicate account (see below).
+This fork of [m1guelpf/cog-nsfw-filter](https://github.com/m1guelpf/cog-nsfw-filter) contains a modified implementation of the example code from the [Red-Teaming the Stable Diffusion Safety Filter](https://arxiv.org/abs/2210.04610v5) paper. It uses the CompVis safety checker only (no full Stable Diffusion pipeline) and exposes loosen margins so you can tune how aggressive the filter is.
 
 ## Adjustable thresholds
 
@@ -17,24 +17,22 @@ Stock Stable Diffusion flags when `(cosine - concept_threshold + adjustment) > 0
 
 Local CLI mirrors the same knobs via `--threshold` / `--special-threshold` (or `SENSITIVITY` / `SPECIAL_SENSITIVITY` env vars).
 
-## Example
+## Development
 
-Sample image included in this repo:
+> **Note** If you just wanna try the upstream model out or run it in production, see the Replicate link above.
 
-`depositphotos_196583668-stock-photo-mother-daughter-walking-run-beautiful.jpg`
+This model is packaged as a [Cog](https://github.com/replicate/cog) model, a tool to package machine learning models as standard containers.
 
-**Local (Windows):**
-
-```powershell
-.\.venv\Scripts\python.exe run_filter.py .\depositphotos_196583668-stock-photo-mother-daughter-walking-run-beautiful.jpg
-```
-
-**Cog (WSL + Docker Desktop):**
+First, [download Cog](https://github.com/replicate/cog#install) on your system. Then download the pre-trained weights:
 
 ```bash
-export PATH="$HOME/bin:$PATH"
-cd /mnt/c/Users/AIGEN/Desktop/NSFW-FILTER
-cog predict -i image=@depositphotos_196583668-stock-photo-mother-daughter-walking-run-beautiful.jpg -i threshold=0.02 -i special_threshold=0.04
+cog run script/download-weights
+```
+
+Once set up, you can run predictions (sample image included as `example.jpg`):
+
+```bash
+cog predict -i image=@example.jpg -i threshold=0.02 -i special_threshold=0.04
 ```
 
 Typical SFW result shape:
@@ -49,113 +47,19 @@ Typical SFW result shape:
 }
 ```
 
-## Local usage (Windows, no Cog required)
-
-Uses the Stable Diffusion safety checker (`CompVis/stable-diffusion-safety-checker`) with the same `forward_inspect` patch from `filter.py`. Full Cog/Docker is not required for the local runner.
-
-### Sensitivity examples
-
-```powershell
-# defaults (NSFW 0.02, special-care 0.04)
-.\.venv\Scripts\python.exe run_filter.py .\test_images\sfw_sample.png
-
-# stock SD aggressiveness for both
-.\.venv\Scripts\python.exe run_filter.py .\img.png --threshold 0 --special-threshold 0
-
-# a bit looser still on NSFW
-.\.venv\Scripts\python.exe run_filter.py .\img.png --threshold 0.03
-
-# tune special-care only
-.\.venv\Scripts\python.exe run_filter.py .\img.png --special-threshold 0.05
-
-# via env
-$env:SENSITIVITY = "0.025"
-$env:SPECIAL_SENSITIVITY = "0.04"
-.\.venv\Scripts\python.exe run_filter.py .\img.png
-
-# debug: print top concept / special-care scores
-.\.venv\Scripts\python.exe run_filter.py .\img.png --verbose
-```
-
-### Setup
-
-```powershell
-cd $env:USERPROFILE\Desktop\NSFW-FILTER
-.\.venv\Scripts\Activate.ps1
-```
-
-### Run
-
-```powershell
-cd $env:USERPROFILE\Desktop\NSFW-FILTER
-.\.venv\Scripts\Activate.ps1
-python run_filter.py path\to\image.jpg
-```
-
-Or without activating:
-
-```powershell
-.\.venv\Scripts\python.exe run_filter.py .\test_images\sfw_sample.png
-```
-
-Quick test script:
-
-```powershell
-.\test.ps1
-```
-
-### Output JSON
-
-```json
-{
-  "nsfw_detected": false,
-  "nsfw": [],
-  "special": [],
-  "threshold": 0.02,
-  "special_threshold": 0.04,
-  "device": "cuda",
-  "image": "..."
-}
-```
-
-- `nsfw_detected` — true if any NSFW concept score exceeds the (possibly loosened) threshold
-- `nsfw` — matched concept names (sexual, nude, …)
-- `special` — matched special-care concepts (little girl, young child, young girl)
-- `threshold` — NSFW loosen margin in use (0 = stock)
-- `special_threshold` — special-care loosen margin in use (0 = stock)
-
-With `--verbose`, also prints top concept / special-care scores and includes them in the JSON.
-
-Weights cache: `diffusers-cache\` (Hugging Face hub layout).
-
-## Replicate / Cog deploy
-
-Cog model inputs:
-
-- `image` (required) — image to classify
-- `threshold` (float, default `0.02`) — NSFW concept loosen margin
-- `special_threshold` (float, default `0.04`) — special-care loosen margin
-
-Outputs: `nsfw_detected`, `nsfw`, `special`, `threshold`, `special_threshold`, `concept_scores`, `special_scores`.
-
-### Local Cog test (WSL + Docker Desktop)
+### Local runner (no Cog required)
 
 ```bash
-export PATH="$HOME/bin:$PATH"
-cd /mnt/c/Users/AIGEN/Desktop/NSFW-FILTER
-cog predict -i image=@test_images/sfw_sample.png -i threshold=0.02 -i special_threshold=0.04
+python run_filter.py example.jpg
+python run_filter.py example.jpg --threshold 0 --special-threshold 0
+python run_filter.py example.jpg --threshold 0.03 --special-threshold 0.05 --verbose
 ```
 
-### Push to Replicate (new model under your account)
+### Push to Replicate
 
-Do **not** force-push to `m1guelpf/cog-nsfw-filter`. Create a **new** GitHub repo (e.g. `cog-nsfw-filter-adjustable`) and a new Replicate model slug under your account:
+Do **not** push to `m1guelpf/nsfw-filter`. Create a new model under your own account:
 
 ```bash
-export REPLICATE_API_TOKEN=r8_...
-export PATH="$HOME/bin:$PATH"
-cd /mnt/c/Users/AIGEN/Desktop/NSFW-FILTER
 cog login
 cog push r8.im/<YOUR_USERNAME>/nsfw-filter-adjustable
 ```
-
-Then the model URL is `https://replicate.com/<YOUR_USERNAME>/nsfw-filter-adjustable`.
