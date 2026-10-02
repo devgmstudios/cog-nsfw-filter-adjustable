@@ -14,10 +14,18 @@ Stock CompVis Stable Diffusion safety checker flags when a concept score is **> 
 
 | Input | Default | Meaning |
 |-------|---------|---------|
-| `threshold` | `0` | NSFW loosen margin. Flag when concept score exceeds this value. `0` = stock CompVis (strictest). Higher = looser (e.g. `0.02`). |
-| `special_threshold` | `0` | Special-care loosen margin (`little girl`, `young child`, `young girl`). `0` = stock CompVis (strictest). Higher = looser (e.g. `0.04`). |
+| `threshold` | `0` | NSFW loosen margin. Flag when concept score exceeds this value. |
+| `special_threshold` | `0` | Special-care loosen margin (`little girl`, `young child`, `young girl`). |
 
-**Rule of thumb:** higher = looser (fewer flags); lower toward `0` = closer to stock / stricter. Defaults already match stock; raise the values only if you want a looser filter.
+**Example scale** (same idea for both inputs; defaults stay at `0`):
+
+| Value | Behavior |
+|-------|----------|
+| `0` (default) | Stock / strictest |
+| `0.02` | More lenient (not as strict) |
+| `0.04` | Even more lenient |
+
+Higher = more lenient (fewer flags). Raise only if you want a looser filter than stock.
 
 Local CLI uses the same knobs via `--threshold` / `--special-threshold` (or `SENSITIVITY` / `SPECIAL_SENSITIVITY` env vars).
 
@@ -51,7 +59,7 @@ Stock-default result shape:
 }
 ```
 
-Looser example (optional — not the defaults):
+More lenient example (optional — not the defaults):
 
 ```bash
 cog predict -i image=@example.jpg -i threshold=0.02 -i special_threshold=0.04

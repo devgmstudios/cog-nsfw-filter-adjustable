@@ -62,8 +62,9 @@ class Predictor(BasePredictor):
         ),
         threshold: float = Input(
             description=(
-                "NSFW loosen margin. Default 0 = stock CompVis (strictest; flag when score > 0). "
-                "Higher = looser (e.g. 0.02). Lower toward 0 = stricter / stock."
+                "NSFW loosen margin. Default 0 = stock / strictest (flag when score > 0). "
+                "0.02 = more lenient (not as strict); 0.04 = even more lenient. "
+                "Higher = more lenient."
             ),
             default=DEFAULT_THRESHOLD,
             ge=0.0,
@@ -72,7 +73,9 @@ class Predictor(BasePredictor):
         special_threshold: float = Input(
             description=(
                 "Special-care loosen margin (little girl / young child / young girl). "
-                "Default 0 = stock CompVis (strictest). Higher = looser (e.g. 0.04)."
+                "Default 0 = stock / strictest. "
+                "0.02 = more lenient (not as strict); 0.04 = even more lenient. "
+                "Higher = more lenient."
             ),
             default=DEFAULT_SPECIAL_THRESHOLD,
             ge=0.0,
