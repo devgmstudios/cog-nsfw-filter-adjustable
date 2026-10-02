@@ -1,0 +1,12 @@
+.venv
+__pycache__
+*.pyc
+.git
+.cog
+test_images
+*.png
+script/cog_Linux_x86_64
+script/install_cog.sh
+script/install_cog2.sh
+a0bb3f7d-a545-411c-8b4d-57f081d00a32_original.png
+e70cb190-289b-40f6-825d-0bb3b27487db_original.png

@@ -1,11 +1,10 @@
+# Cog build for Replicate - CompVis safety-checker only (no full SD1.5).
+# Matches local run_filter.py behavior with adjustable thresholds.
 build:
   gpu: true
-  cuda: "11.6.2"
-  python_version: "3.10"
-  python_packages:
-    - "diffusers==0.6.0"
-    - "torch==1.12.1 --extra-index-url=https://download.pytorch.org/whl/cu116"
-    - "ftfy==6.1.1"
-    - "scipy==1.9.0"
-    - "transformers==4.21.1"
+  python_version: "3.11"
+  python_requirements: requirements-cog.txt
+  run:
+    - |
+      python -c "from pathlib import Path; from transformers import CLIPImageProcessor; from diffusers.pipelines.stable_diffusion.safety_checker import StableDiffusionSafetyChecker; c=Path('diffusers-cache'); c.mkdir(parents=True, exist_ok=True); print('Downloading CompVis/stable-diffusion-safety-checker'); StableDiffusionSafetyChecker.from_pretrained('CompVis/stable-diffusion-safety-checker', cache_dir=str(c)); print('Downloading openai/clip-vit-large-patch14'); CLIPImageProcessor.from_pretrained('openai/clip-vit-large-patch14', cache_dir=str(c)); print('Weights ready.')"
 predict: "predict.py:Predictor"

@@ -1,3 +1,26 @@
-.cog/
+# Python / venvs
+.venv/
+venv/
 __pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+
+# Model / Cog caches (do not commit weights)
 diffusers-cache/
+*.safetensors
+.cog/
+
+# Secrets / env
+.env
+.env.*
+
+# Logs / OS junk
+*.log
+.DS_Store
+Thumbs.db
+
+# Local scratch / large binaries
+replicate_timed_results.json
+script/cog_Linux_x86_64
+script/install_cog*.sh
