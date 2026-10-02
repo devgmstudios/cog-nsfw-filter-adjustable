@@ -41,10 +41,10 @@ First, [download Cog](https://github.com/replicate/cog#install) on your system. 
 cog run script/download-weights
 ```
 
-Once set up, you can run predictions (sample image included as `example.jpg`):
+Once set up, you can run predictions (hosted SFW demo image):
 
 ```bash
-cog predict -i image=@example.jpg
+cog predict -i image=https://st2.depositphotos.com/1001001/9140/i/950/depositphotos_91408974-stock-photo-little-girl-on-vacation.jpg
 ```
 
 Stock-default result shape:
@@ -62,15 +62,15 @@ Stock-default result shape:
 More lenient example (optional — not the defaults):
 
 ```bash
-cog predict -i image=@example.jpg -i threshold=0.02 -i special_threshold=0.04
+cog predict -i image=https://st2.depositphotos.com/1001001/9140/i/950/depositphotos_91408974-stock-photo-little-girl-on-vacation.jpg -i threshold=0.02 -i special_threshold=0.04
 ```
 
 ### Local runner (no Cog required)
 
 ```bash
-python run_filter.py example.jpg
-python run_filter.py example.jpg --threshold 0.02 --special-threshold 0.04
-python run_filter.py example.jpg --threshold 0.03 --special-threshold 0.05 --verbose
+python run_filter.py path/to/image.jpg
+python run_filter.py path/to/image.jpg --threshold 0.02 --special-threshold 0.04
+python run_filter.py path/to/image.jpg --threshold 0.03 --special-threshold 0.05 --verbose
 ```
 
 ### Push to Replicate

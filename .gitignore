@@ -38,3 +38,5 @@ script/install_cog*.sh
 *.token
 .env
 .env.*
+
+example.jpg
