@@ -33,3 +33,8 @@ script/cog_predict_test.sh
 script/cog_Linux_x86_64
 script/install_cog*.sh
 *_original.png
+
+.replicate_token
+*.token
+.env
+.env.*
