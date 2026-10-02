@@ -11,16 +11,25 @@ diffusers-cache/
 *.safetensors
 .cog/
 
-# Secrets / env
+# Secrets / env / credentials
 .env
 .env.*
+*.pem
+*.key
+.cog/credentials
+**/credentials.json
 
 # Logs / OS junk
 *.log
 .DS_Store
 Thumbs.db
 
-# Local scratch / large binaries
+# Local scratch / machine-only
 replicate_timed_results.json
+test.ps1
+test_images/
+script/check_token.sh
+script/cog_predict_test.sh
 script/cog_Linux_x86_64
 script/install_cog*.sh
+*_original.png
