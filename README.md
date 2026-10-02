@@ -8,7 +8,7 @@ This fork of [m1guelpf/cog-nsfw-filter](https://github.com/m1guelpf/cog-nsfw-fil
 
 ## Sensitivity adjustment
 
-Stock CompVis behavior uses `threshold=0` and `special_threshold=0` — that is the **most aggressive** setting (flags the most).
+Stock CompVis behavior uses `threshold=0` and `special_threshold=0` - that is the **most aggressive** setting (flags the most).
 
 - **Lower threshold (toward 0)** = **more aggressive** (more flags). `0` is stock / strictest.
 - **Higher threshold** = **less aggressive** (fewer flags). Try `0.02` or `0.04` for a more lenient filter.
@@ -29,7 +29,7 @@ cog run script/download-weights
 cog predict -i image=https://st2.depositphotos.com/1001001/9140/i/950/depositphotos_91408974-stock-photo-little-girl-on-vacation.jpg
 ```
 
-Push (own account only — do not push to `m1guelpf/nsfw-filter`):
+Push (own account only - do not push to `m1guelpf/nsfw-filter`):
 
 ```bash
 cog push r8.im/devgmstudios/nsfw-filter-adjustable
