@@ -15,3 +15,6 @@ script/cog_Linux_x86_64
 script/install_cog*.sh
 
 example.jpg
+.replicate_token_tmp
+*.token
+.replicate_token

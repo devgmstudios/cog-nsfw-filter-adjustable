@@ -40,3 +40,4 @@ script/install_cog*.sh
 .env.*
 
 example.jpg
+.replicate_token_tmp
