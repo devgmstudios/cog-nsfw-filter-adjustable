@@ -6,12 +6,21 @@ An isolated version of Stable Diffusion's content filter, which lets you run it 
 
 This fork of [m1guelpf/cog-nsfw-filter](https://github.com/m1guelpf/cog-nsfw-filter) contains a modified implementation of the example code from the [Red-Teaming the Stable Diffusion Safety Filter](https://arxiv.org/abs/2210.04610v5) paper. It uses the CompVis safety checker only (no full Stable Diffusion pipeline).
 
-You can loosen or tighten how sensitive the NSFW and special-care checks are with two optional inputs (same idea as upstream, but you can change them):
+## Sensitivity (threshold / special_threshold)
+
+Stock CompVis Stable Diffusion safety checker flags when a concept score is **> 0**. That is the strictest / original behavior:
+
+| Setting | Stock CompVis | This fork's default |
+|---------|---------------|---------------------|
+| `threshold` (NSFW concepts) | `0` | `0.02` (**intentionally looser** than stock) |
+| `special_threshold` (`little girl`, `young child`, `young girl`) | `0` | `0.04` (**intentionally looser** than stock) |
+
+**Rule of thumb:** higher = looser (fewer flags); lower toward `0` = closer to stock / stricter. To match stock exactly, set **both** to `0`.
 
 | Input | Default | Meaning |
 |-------|---------|---------|
-| `threshold` | `0.02` | How sensitive the NSFW check is. Higher = looser (fewer flags). Lower = tighter. `0` matches stock Stable Diffusion. |
-| `special_threshold` | `0.04` | How sensitive the special-care check is (`little girl`, `young child`, `young girl`). Higher = looser. `0` = stock. |
+| `threshold` | `0.02` | NSFW loosen margin. Flag when concept score exceeds this value. Higher = looser; `0` = stock CompVis. |
+| `special_threshold` | `0.04` | Special-care loosen margin. Higher = looser; `0` = stock CompVis. **Not** stock by default — `0.04` is looser than stock's `0`. |
 
 Local CLI uses the same knobs via `--threshold` / `--special-threshold` (or `SENSITIVITY` / `SPECIAL_SENSITIVITY` env vars).
 
