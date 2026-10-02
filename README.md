@@ -1,6 +1,6 @@
 # Stable Diffusion NSFW Filter
 
-<p align="center"><b><a href="https://replicate.com/m1guelpf/nsfw-filter" target="_blank">View original on Replicate</a> | <a href="https://github.com/m1guelpf/cog-nsfw-filter" target="_blank">Upstream repo</a></b></p>
+<p align="center"><b><a href="https://github.com/devgmstudios/cog-nsfw-filter-adjustable" target="_blank">GitHub</a> | <a href="https://replicate.com/m1guelpf/nsfw-filter" target="_blank">View original on Replicate</a> | <a href="https://github.com/m1guelpf/cog-nsfw-filter" target="_blank">Upstream repo</a></b></p>
 
 An isolated version of Stable Diffusion's content filter, which lets you run it against arbitrary images.
 
@@ -79,5 +79,5 @@ Do **not** push to `m1guelpf/nsfw-filter`. Create a new model under your own acc
 
 ```bash
 cog login
-cog push r8.im/<YOUR_USERNAME>/nsfw-filter-adjustable
+cog push r8.im/devgmstudios/nsfw-filter-adjustable
 ```
