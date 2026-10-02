@@ -14,20 +14,20 @@ Stock CompVis Stable Diffusion safety checker flags when a concept score is **> 
 
 | Input | Default | Meaning |
 |-------|---------|---------|
-| `threshold` | `0` | NSFW loosen margin. Flag when concept score exceeds this value. |
-| `special_threshold` | `0` | Special-care loosen margin (`little girl`, `young child`, `young girl`). |
+| `threshold` | `0` | NSFW sensitivity. Flag when concept score exceeds this value. |
+| `special_threshold` | `0` | Special-care sensitivity. Same scale as `threshold`. |
 
-**Example scale** (same idea for both inputs; defaults stay at `0`):
+**Scale** (same for both):
 
 | Value | Behavior |
 |-------|----------|
 | `0` (default) | Stock / strictest |
-| `0.02` | More lenient (not as strict) |
+| `0.02` | More lenient |
 | `0.04` | Even more lenient |
 
-Higher = more lenient (fewer flags). Raise only if you want a looser filter than stock.
+Higher = more lenient; lower toward `0` = stricter.
 
-Local CLI uses the same knobs via `--threshold` / `--special-threshold` (or `SENSITIVITY` / `SPECIAL_SENSITIVITY` env vars).
+CLI: `--threshold` / `--special-threshold` (env aliases: `SENSITIVITY` / `SPECIAL_SENSITIVITY`).
 
 ## Development
 

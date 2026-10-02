@@ -8,7 +8,7 @@ concepts = ['sexual', 'nude', 'sex', '18+', 'naked', 'nsfw', 'porn', 'dick', 'va
 special_concepts = ["little girl", "young child", "young girl"]
 
 # Defaults match stock CompVis SD checker: flag when score > 0.
-# Raise threshold / special_threshold (e.g. 0.02 / 0.04) to loosen.
+# Raise threshold / special_threshold to be more lenient (e.g. 0.02 / 0.04).
 DEFAULT_THRESHOLD = 0.0
 DEFAULT_SPECIAL_THRESHOLD = 0.0
 
@@ -20,8 +20,8 @@ def cosine_distance(image_embeds, text_embeds):
 
 
 def resolve_threshold(threshold=None):
-    """Resolve NSFW loosen margin: explicit arg > SENSITIVITY env > DEFAULT_THRESHOLD.
-    Default 0 = stock CompVis. Higher = looser (harder to flag NSFW).
+    """Resolve NSFW sensitivity: explicit arg > SENSITIVITY env > DEFAULT_THRESHOLD.
+    Default 0 = stock / strictest. 0.02 = more lenient; 0.04 = even more lenient. Higher = more lenient; lower toward 0 = stricter.
     """
     if threshold is not None:
         return float(threshold)
@@ -32,8 +32,8 @@ def resolve_threshold(threshold=None):
 
 
 def resolve_special_threshold(threshold=None):
-    """Resolve special-care margin: explicit arg > SPECIAL_SENSITIVITY env > DEFAULT_SPECIAL_THRESHOLD.
-    Default 0 = stock CompVis. Higher = looser.
+    """Resolve special-care sensitivity: explicit arg > SPECIAL_SENSITIVITY env > DEFAULT_SPECIAL_THRESHOLD.
+    Default 0 = stock / strictest. 0.02 = more lenient; 0.04 = even more lenient. Higher = more lenient; lower toward 0 = stricter.
     """
     if threshold is not None:
         return float(threshold)
@@ -47,8 +47,8 @@ def resolve_special_threshold(threshold=None):
 def forward_inspect(self, clip_input, images, threshold=None, special_threshold=None):
     """Inspect CLIP embeds against NSFW + special-care concepts.
 
-    threshold: NSFW margin (default 0 = stock). Higher = looser.
-    special_threshold: special-care margin (default 0 = stock). Higher = looser.
+    threshold: NSFW sensitivity. Default 0 = stock / strictest. 0.02 = more lenient; 0.04 = even more lenient. Higher = more lenient; lower toward 0 = stricter.
+    special_threshold: special-care sensitivity. Default 0 = stock / strictest. 0.02 = more lenient; 0.04 = even more lenient. Higher = more lenient; lower toward 0 = stricter.
     """
     margin = resolve_threshold(threshold)
     special_margin = resolve_special_threshold(special_threshold)

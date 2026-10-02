@@ -3,10 +3,9 @@ Local runner for m1guelpf/nsfw-filter (cog-nsfw-filter).
 Uses CompVis/stable-diffusion-safety-checker + CLIP feature extractor
 with the same forward_inspect patch as the original Replicate Cog model.
 
-Defaults match stock CompVis (threshold=0, special_threshold=0).
-Raise them to loosen (e.g. 0.02 / 0.04).
-Override with --threshold / SENSITIVITY and --special-threshold / SPECIAL_SENSITIVITY
-(0 = stock for either).
+Defaults: threshold=0, special_threshold=0 (stock / strictest).
+Default 0 = stock / strictest. 0.02 = more lenient; 0.04 = even more lenient. Higher = more lenient; lower toward 0 = stricter.
+CLI: --threshold / --special-threshold (env aliases: SENSITIVITY / SPECIAL_SENSITIVITY).
 """
 from __future__ import annotations
 
@@ -118,7 +117,7 @@ def classify(
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Local m1guelpf/nsfw-filter runner (defaults match stock CompVis; raise thresholds to loosen)"
+        description="Local m1guelpf/nsfw-filter runner (defaults: 0 = stock / strictest; higher = more lenient)"
     )
     parser.add_argument("image", type=Path, help="Path to image to classify")
     parser.add_argument(
@@ -131,7 +130,7 @@ def main() -> int:
         type=float,
         default=None,
         help=(
-            "NSFW loosen margin (default: 0 = stock CompVis, or SENSITIVITY env). Higher = looser (e.g. 0.02). "
+            "NSFW sensitivity (or SENSITIVITY env). Default 0 = stock / strictest. 0.02 = more lenient; 0.04 = even more lenient. Higher = more lenient; lower toward 0 = stricter."
         ),
     )
     parser.add_argument(
@@ -139,7 +138,7 @@ def main() -> int:
         type=float,
         default=None,
         help=(
-            "Special-care loosen margin (default: 0 = stock CompVis, or SPECIAL_SENSITIVITY env). Higher = looser (e.g. 0.04). "
+            "Special-care sensitivity (or SPECIAL_SENSITIVITY env). Default 0 = stock / strictest. 0.02 = more lenient; 0.04 = even more lenient. Higher = more lenient; lower toward 0 = stricter."
         ),
     )
     parser.add_argument(
