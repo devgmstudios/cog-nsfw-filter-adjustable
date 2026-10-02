@@ -1,6 +1,6 @@
 # Stable Diffusion NSFW Filter
 
-<p align="center"><b><a href="https://github.com/devgmstudios/cog-nsfw-filter-adjustable" target="_blank">GitHub</a> | <a href="https://replicate.com/m1guelpf/nsfw-filter" target="_blank">View original on Replicate</a> | <a href="https://github.com/m1guelpf/cog-nsfw-filter" target="_blank">Upstream repo</a></b></p>
+<p align="center"><b><a href="https://github.com/devgmstudios/cog-nsfw-filter-adjustable" target="_blank">GitHub</a> | <a href="https://replicate.com/devgmstudios/nsfw-filter-adjustable" target="_blank">View on Replicate</a> | <a href="https://github.com/m1guelpf/cog-nsfw-filter" target="_blank">Upstream</a></b></p>
 
 An isolated version of Stable Diffusion's content filter, which lets you run it against arbitrary images.
 
@@ -8,76 +8,29 @@ This fork of [m1guelpf/cog-nsfw-filter](https://github.com/m1guelpf/cog-nsfw-fil
 
 ## Sensitivity adjustment
 
-Stock CompVis Stable Diffusion safety checker flags when a concept score is **> 0**. That is the strictest / original behavior.
+Stock CompVis behavior uses `threshold=0` and `special_threshold=0` — that is the **most aggressive** setting (flags the most).
 
-**This project's defaults match stock:** `threshold=0` and `special_threshold=0`.
+- **Lower threshold (toward 0)** = **more aggressive** (more flags). `0` is stock / strictest.
+- **Higher threshold** = **less aggressive** (fewer flags). Try `0.02` or `0.04` for a more lenient filter.
 
 | Input | Default | Meaning |
 |-------|---------|---------|
 | `threshold` | `0` | NSFW sensitivity. Flag when concept score exceeds this value. |
 | `special_threshold` | `0` | Special-care sensitivity. Same scale as `threshold`. |
 
-**Scale** (same for both):
-
-| Value | Behavior |
-|-------|----------|
-| `0` (default) | Stock / strictest |
-| `0.02` | More lenient |
-| `0.04` | Even more lenient |
-
-Higher = more lenient; lower toward `0` = stricter.
-
-CLI: `--threshold` / `--special-threshold` (env aliases: `SENSITIVITY` / `SPECIAL_SENSITIVITY`).
-
 ## Development
 
-> **Note** If you just wanna try the upstream model out or run it in production, see the Replicate link above.
+> **Note** To try the model or run it in production, use the Replicate link above.
 
-This model is packaged as a [Cog](https://github.com/replicate/cog) model, a tool to package machine learning models as standard containers.
-
-First, [download Cog](https://github.com/replicate/cog#install) on your system. Then download the pre-trained weights:
+Packaged with [Cog](https://github.com/replicate/cog). Clone this repo, then:
 
 ```bash
 cog run script/download-weights
-```
-
-Once set up, you can run predictions (hosted SFW demo image):
-
-```bash
 cog predict -i image=https://st2.depositphotos.com/1001001/9140/i/950/depositphotos_91408974-stock-photo-little-girl-on-vacation.jpg
 ```
 
-Stock-default result shape:
-
-```json
-{
-  "nsfw_detected": false,
-  "nsfw": [],
-  "special": [],
-  "threshold": 0.0,
-  "special_threshold": 0.0
-}
-```
-
-More lenient example (optional — not the defaults):
+Push (own account only — do not push to `m1guelpf/nsfw-filter`):
 
 ```bash
-cog predict -i image=https://st2.depositphotos.com/1001001/9140/i/950/depositphotos_91408974-stock-photo-little-girl-on-vacation.jpg -i threshold=0.02 -i special_threshold=0.04
-```
-
-### Local runner (no Cog required)
-
-```bash
-python run_filter.py path/to/image.jpg
-python run_filter.py path/to/image.jpg --threshold 0.02 --special-threshold 0.04
-python run_filter.py path/to/image.jpg --threshold 0.03 --special-threshold 0.05 --verbose
-```
-
-### Push to Replicate
-
-Do **not** push to `m1guelpf/nsfw-filter`. Create a new model under your own account:
-
-```bash
-cog login
 cog push r8.im/devgmstudios/nsfw-filter-adjustable
 ```
