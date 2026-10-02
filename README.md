@@ -1,21 +1,19 @@
-# Stable Diffusion NSFW Filter (adjustable)
+# Stable Diffusion NSFW Filter
 
 <p align="center"><b><a href="https://replicate.com/m1guelpf/nsfw-filter" target="_blank">View original on Replicate</a> | <a href="https://github.com/m1guelpf/cog-nsfw-filter" target="_blank">Upstream repo</a></b></p>
 
-An isolated version of Stable Diffusion's content filter, which lets you run it against arbitrary images - with **adjustable thresholds**.
+An isolated version of Stable Diffusion's content filter, which lets you run it against arbitrary images.
 
-This fork of [m1guelpf/cog-nsfw-filter](https://github.com/m1guelpf/cog-nsfw-filter) contains a modified implementation of the example code from the [Red-Teaming the Stable Diffusion Safety Filter](https://arxiv.org/abs/2210.04610v5) paper. It uses the CompVis safety checker only (no full Stable Diffusion pipeline) and exposes loosen margins so you can tune how aggressive the filter is.
+This fork of [m1guelpf/cog-nsfw-filter](https://github.com/m1guelpf/cog-nsfw-filter) contains a modified implementation of the example code from the [Red-Teaming the Stable Diffusion Safety Filter](https://arxiv.org/abs/2210.04610v5) paper. It uses the CompVis safety checker only (no full Stable Diffusion pipeline).
 
-## Adjustable thresholds
-
-Stock Stable Diffusion flags when `(cosine - concept_threshold + adjustment) > 0`. This runner defaults to requiring more headroom:
+You can loosen or tighten how sensitive the NSFW and special-care checks are with two optional inputs (same idea as upstream, but you can change them):
 
 | Input | Default | Meaning |
 |-------|---------|---------|
-| `threshold` | `0.02` | NSFW concept loosen margin. Higher = less aggressive. `0` = stock SD. |
-| `special_threshold` | `0.04` | Special-care concepts (`little girl`, `young child`, `young girl`). Higher = less aggressive. `0` = stock. |
+| `threshold` | `0.02` | How sensitive the NSFW check is. Higher = looser (fewer flags). Lower = tighter. `0` matches stock Stable Diffusion. |
+| `special_threshold` | `0.04` | How sensitive the special-care check is (`little girl`, `young child`, `young girl`). Higher = looser. `0` = stock. |
 
-Local CLI mirrors the same knobs via `--threshold` / `--special-threshold` (or `SENSITIVITY` / `SPECIAL_SENSITIVITY` env vars).
+Local CLI uses the same knobs via `--threshold` / `--special-threshold` (or `SENSITIVITY` / `SPECIAL_SENSITIVITY` env vars).
 
 ## Development
 
