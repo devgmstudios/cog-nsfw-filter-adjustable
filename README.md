@@ -6,7 +6,7 @@ An isolated version of Stable Diffusion's content filter, which lets you run it 
 
 This fork of [m1guelpf/cog-nsfw-filter](https://github.com/m1guelpf/cog-nsfw-filter) contains a modified implementation of the example code from the [Red-Teaming the Stable Diffusion Safety Filter](https://arxiv.org/abs/2210.04610v5) paper. It uses the CompVis safety checker only (no full Stable Diffusion pipeline).
 
-## Sensitivity (threshold / special_threshold)
+## Sensitivity adjustment
 
 Stock CompVis Stable Diffusion safety checker flags when a concept score is **> 0**. That is the strictest / original behavior.
 
