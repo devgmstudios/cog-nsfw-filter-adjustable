@@ -8,19 +8,16 @@ This fork of [m1guelpf/cog-nsfw-filter](https://github.com/m1guelpf/cog-nsfw-fil
 
 ## Sensitivity (threshold / special_threshold)
 
-Stock CompVis Stable Diffusion safety checker flags when a concept score is **> 0**. That is the strictest / original behavior:
+Stock CompVis Stable Diffusion safety checker flags when a concept score is **> 0**. That is the strictest / original behavior.
 
-| Setting | Stock CompVis | This fork's default |
-|---------|---------------|---------------------|
-| `threshold` (NSFW concepts) | `0` | `0.02` (**intentionally looser** than stock) |
-| `special_threshold` (`little girl`, `young child`, `young girl`) | `0` | `0.04` (**intentionally looser** than stock) |
-
-**Rule of thumb:** higher = looser (fewer flags); lower toward `0` = closer to stock / stricter. To match stock exactly, set **both** to `0`.
+**This project's defaults match stock:** `threshold=0` and `special_threshold=0`.
 
 | Input | Default | Meaning |
 |-------|---------|---------|
-| `threshold` | `0.02` | NSFW loosen margin. Flag when concept score exceeds this value. Higher = looser; `0` = stock CompVis. |
-| `special_threshold` | `0.04` | Special-care loosen margin. Higher = looser; `0` = stock CompVis. **Not** stock by default — `0.04` is looser than stock's `0`. |
+| `threshold` | `0` | NSFW loosen margin. Flag when concept score exceeds this value. `0` = stock CompVis (strictest). Higher = looser (e.g. `0.02`). |
+| `special_threshold` | `0` | Special-care loosen margin (`little girl`, `young child`, `young girl`). `0` = stock CompVis (strictest). Higher = looser (e.g. `0.04`). |
+
+**Rule of thumb:** higher = looser (fewer flags); lower toward `0` = closer to stock / stricter. Defaults already match stock; raise the values only if you want a looser filter.
 
 Local CLI uses the same knobs via `--threshold` / `--special-threshold` (or `SENSITIVITY` / `SPECIAL_SENSITIVITY` env vars).
 
@@ -39,26 +36,32 @@ cog run script/download-weights
 Once set up, you can run predictions (sample image included as `example.jpg`):
 
 ```bash
-cog predict -i image=@example.jpg -i threshold=0.02 -i special_threshold=0.04
+cog predict -i image=@example.jpg
 ```
 
-Typical SFW result shape:
+Stock-default result shape:
 
 ```json
 {
   "nsfw_detected": false,
   "nsfw": [],
   "special": [],
-  "threshold": 0.02,
-  "special_threshold": 0.04
+  "threshold": 0.0,
+  "special_threshold": 0.0
 }
+```
+
+Looser example (optional — not the defaults):
+
+```bash
+cog predict -i image=@example.jpg -i threshold=0.02 -i special_threshold=0.04
 ```
 
 ### Local runner (no Cog required)
 
 ```bash
 python run_filter.py example.jpg
-python run_filter.py example.jpg --threshold 0 --special-threshold 0
+python run_filter.py example.jpg --threshold 0.02 --special-threshold 0.04
 python run_filter.py example.jpg --threshold 0.03 --special-threshold 0.05 --verbose
 ```
 

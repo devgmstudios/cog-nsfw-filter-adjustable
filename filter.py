@@ -7,12 +7,10 @@ concepts = ['sexual', 'nude', 'sex', '18+', 'naked', 'nsfw', 'porn', 'dick', 'va
             'naked child', 'explicit content', 'uncensored', 'fuck', 'nipples', 'visible nipples', 'naked breasts', 'areola']
 special_concepts = ["little girl", "young child", "young girl"]
 
-# Default loosen vs stock SD checker: require this much extra headroom before flagging NSFW.
-# Stock flags when (cosine - concept_threshold + adjustment) > 0.
-# With DEFAULT_THRESHOLD=0.02, flags when that score > 0.02 (~0.02 less aggressive).
-DEFAULT_THRESHOLD = 0.02
-# Special-care concepts: same style as NSFW, default score > 0.04 (less aggressive than stock > 0).
-DEFAULT_SPECIAL_THRESHOLD = 0.04
+# Defaults match stock CompVis SD checker: flag when score > 0.
+# Raise threshold / special_threshold (e.g. 0.02 / 0.04) to loosen.
+DEFAULT_THRESHOLD = 0.0
+DEFAULT_SPECIAL_THRESHOLD = 0.0
 
 
 def cosine_distance(image_embeds, text_embeds):
@@ -23,7 +21,7 @@ def cosine_distance(image_embeds, text_embeds):
 
 def resolve_threshold(threshold=None):
     """Resolve NSFW loosen margin: explicit arg > SENSITIVITY env > DEFAULT_THRESHOLD.
-    Higher value = less aggressive (harder to flag NSFW). Use 0 for stock SD behavior.
+    Default 0 = stock CompVis. Higher = looser (harder to flag NSFW).
     """
     if threshold is not None:
         return float(threshold)
@@ -35,7 +33,7 @@ def resolve_threshold(threshold=None):
 
 def resolve_special_threshold(threshold=None):
     """Resolve special-care margin: explicit arg > SPECIAL_SENSITIVITY env > DEFAULT_SPECIAL_THRESHOLD.
-    Higher value = less aggressive. Use 0 for stock SD behavior (score > 0).
+    Default 0 = stock CompVis. Higher = looser.
     """
     if threshold is not None:
         return float(threshold)
@@ -49,8 +47,8 @@ def resolve_special_threshold(threshold=None):
 def forward_inspect(self, clip_input, images, threshold=None, special_threshold=None):
     """Inspect CLIP embeds against NSFW + special-care concepts.
 
-    threshold: NSFW margin above stock (default ~0.02). Higher = less aggressive.
-    special_threshold: special-care margin (default ~0.04). Higher = less aggressive.
+    threshold: NSFW margin (default 0 = stock). Higher = looser.
+    special_threshold: special-care margin (default 0 = stock). Higher = looser.
     """
     margin = resolve_threshold(threshold)
     special_margin = resolve_special_threshold(special_threshold)
@@ -79,7 +77,7 @@ def forward_inspect(self, clip_input, images, threshold=None, special_threshold=
 
         adjustment = 0.0
 
-        # Special-care: require score > special_margin (default 0.04).
+        # Special-care: require score > special_margin (default 0 = stock).
         for concet_idx in range(len(special_cos_dist[0])):
             concept_cos = special_cos_dist[i][concet_idx]
             concept_threshold = self.special_care_embeds_weights[concet_idx].item()
@@ -94,7 +92,7 @@ def forward_inspect(self, clip_input, images, threshold=None, special_threshold=
                 adjustment = 0.01
                 matches["special"].append(name)
 
-        # NSFW concepts: require score > margin (default 0.02) instead of stock > 0.
+        # NSFW concepts: require score > margin (default 0 = stock).
         for concet_idx in range(len(cos_dist[0])):
             concept_cos = cos_dist[i][concet_idx]
             concept_threshold = self.concept_embeds_weights[concet_idx].item()

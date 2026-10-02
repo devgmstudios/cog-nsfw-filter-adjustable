@@ -3,8 +3,8 @@ Local runner for m1guelpf/nsfw-filter (cog-nsfw-filter).
 Uses CompVis/stable-diffusion-safety-checker + CLIP feature extractor
 with the same forward_inspect patch as the original Replicate Cog model.
 
-Default NSFW threshold is ~0.02 looser than stock SD (less aggressive).
-Default special-care threshold is ~0.04.
+Defaults match stock CompVis (threshold=0, special_threshold=0).
+Raise them to loosen (e.g. 0.02 / 0.04).
 Override with --threshold / SENSITIVITY and --special-threshold / SPECIAL_SENSITIVITY
 (0 = stock for either).
 """
@@ -118,7 +118,7 @@ def classify(
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Local m1guelpf/nsfw-filter runner (mildly less aggressive than stock by default)"
+        description="Local m1guelpf/nsfw-filter runner (defaults match stock CompVis; raise thresholds to loosen)"
     )
     parser.add_argument("image", type=Path, help="Path to image to classify")
     parser.add_argument(
@@ -131,8 +131,7 @@ def main() -> int:
         type=float,
         default=None,
         help=(
-            "NSFW loosen margin vs stock SD filter (default: 0.02, or SENSITIVITY env). "
-            "Higher = less aggressive. Use 0 for stock behavior."
+            "NSFW loosen margin (default: 0 = stock CompVis, or SENSITIVITY env). Higher = looser (e.g. 0.02). "
         ),
     )
     parser.add_argument(
@@ -140,8 +139,7 @@ def main() -> int:
         type=float,
         default=None,
         help=(
-            "Special-care loosen margin (default: 0.04, or SPECIAL_SENSITIVITY env). "
-            "Higher = less aggressive. Use 0 for stock behavior (score > 0)."
+            "Special-care loosen margin (default: 0 = stock CompVis, or SPECIAL_SENSITIVITY env). Higher = looser (e.g. 0.04). "
         ),
     )
     parser.add_argument(
