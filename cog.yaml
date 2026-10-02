@@ -1,5 +1,5 @@
 # Cog build for Replicate - CompVis safety-checker only (no full SD1.5).
-# Matches local run_filter.py behavior with adjustable thresholds.
+# Matches local run_filter.py behavior with tunable NSFW / special-care sensitivity.
 build:
   gpu: true
   python_version: "3.11"

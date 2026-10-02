@@ -80,7 +80,7 @@ class Predictor(BasePredictor):
             le=1.0,
         ),
     ) -> FilterOutput:
-        """Run the provided image through the NSFW filter with adjustable thresholds."""
+        """Run the provided image through the NSFW filter with tunable NSFW / special-care sensitivity."""
         pil = Image.open(image).convert("RGB")
         safety_checker_input = self.feature_extractor(
             images=pil, return_tensors="pt"
